@@ -7,7 +7,7 @@ const createNewUser = async (req, res) => {
 
   if (!firstName || !lastName || !email || !password)
     return res
-      .status(401)
+      .status(400)
       .json({ message: "all user data are required" })
 
   try {
@@ -43,7 +43,7 @@ const login = async (req, res) => {
 
   if (!email || !password)
     return res
-      .status(401)
+      .status(400)
       .json({ message: "all user data are required" })
 
   try {
@@ -115,7 +115,7 @@ const logout = (req, res) => {
     expires: new Date(Date.now()),
   })
 
-  res.status(201).json({ message: "logged out" })
+  res.status(200).json({ message: "logged out" })
 }
 
 export { createNewUser, login, getCurrentUser, logout }

@@ -17,15 +17,26 @@ app.use(cookieParser())
 // Routes
 app.use("/user", usersRoute)
 
+app.all("*", (req, res) => {
+  res
+    .status(404)
+    .json({ message: `can not get ${req.url}` })
+})
+
 app.use((req, res, next) => {
   console.log(
-    `${req.url}\t${
-      req.method
-    }\t${new Date().toDateString()}\t${req.cookies}`
+    `
+    ${req.url}\t
+    ${req.method}\t
+    ${new Date().toDateString()}\t
+    ${req.cookies}
+    `
   )
   next()
 })
 
-app.listen(3500, () =>
-  console.log("server running on port 3500")
+const PORT = +process.env.PORT || 3500
+
+app.listen(PORT, () =>
+  console.log(`server running on port ${PORT}`)
 )
