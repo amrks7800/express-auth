@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt"
-import pool from "../db/index.js"
 import jwt from "jsonwebtoken"
 import {
   getUserByEmail,
