@@ -1,6 +1,11 @@
 import bcrypt from "bcrypt"
 import pool from "../db/index.js"
 import jwt from "jsonwebtoken"
+import {
+  getUserByEmail,
+  getUserByID,
+  createNewUserInDB,
+} from "../db/user.js"
 
 const createNewUser = async (req, res) => {
   const { firstName, lastName, email, password } = req.body
@@ -11,10 +16,7 @@ const createNewUser = async (req, res) => {
       .json({ message: "all user data are required" })
 
   try {
-    const isDuplicateUser = await pool.query(
-      "select * from users where email = $1",
-      [email]
-    )
+    const isDuplicateUser = await getUserByEmail(email)
 
     if (isDuplicateUser.rows.length)
       return res.status(409).json({
@@ -24,9 +26,11 @@ const createNewUser = async (req, res) => {
 
     const hashedPwd = await bcrypt.hash(password, 10)
 
-    const result = await pool.query(
-      "INSERT INTO users (first_name, last_name, email, password) VALUES ($1, $2, $3, $4)",
-      [firstName, lastName, email, hashedPwd]
+    const result = await createNewUserInDB(
+      firstName,
+      lastName,
+      email,
+      hashedPwd
     )
 
     if (result.rows)
@@ -47,10 +51,7 @@ const login = async (req, res) => {
       .json({ message: "all user data are required" })
 
   try {
-    const { rows } = await pool.query(
-      "select * from users where email = $1",
-      [email]
-    )
+    const { rows } = await getUserByEmail(email)
 
     if (!rows.length)
       return res
@@ -96,10 +97,7 @@ const getCurrentUser = async (req, res) => {
 
     // console.log(decodedToken)
 
-    const { rows } = await pool.query(
-      "SELECT * from users where id = $1",
-      [decodedToken.id]
-    )
+    const { rows } = await getUserByID(decodedToken.id)
 
     delete rows[0].password
 

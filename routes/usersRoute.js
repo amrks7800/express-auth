@@ -1,4 +1,4 @@
-import express from "express"
+import { Router } from "express"
 import {
   createNewUser,
   getCurrentUser,
@@ -6,7 +6,7 @@ import {
   logout,
 } from "../controllers/usersController.js"
 
-const usersRoute = express.Router()
+const usersRoute = Router()
 
 usersRoute.post("/register", createNewUser)
 usersRoute.post("/login", login)
