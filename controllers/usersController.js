@@ -98,8 +98,6 @@ const getCurrentUser = async (req, res) => {
 
     const { rows } = await getUserByID(decodedToken.id)
 
-    delete rows[0].password
-
     res.status(200).json(rows[0])
   } catch (err) {
     res.status(500).json({ message: err.message })

@@ -14,6 +14,15 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use(cookieParser())
 
+app.use((req, res, next) => {
+  console.log(
+    `${req.url}\t${req.method}\t${
+      res.statusCode
+    }\t${new Date().toDateString()}`
+  )
+  next()
+})
+
 // Routes
 app.use("/user", usersRoute)
 
@@ -21,18 +30,6 @@ app.all("*", (req, res) => {
   res
     .status(404)
     .json({ message: `can not get ${req.url}` })
-})
-
-app.use((req, res, next) => {
-  console.log(
-    `
-    ${req.url}\t
-    ${req.method}\t
-    ${new Date().toDateString()}\t
-    ${req.cookies}
-    `
-  )
-  next()
 })
 
 const PORT = +process.env.PORT || 3500
